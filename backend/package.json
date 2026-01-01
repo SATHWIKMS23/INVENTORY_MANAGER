@@ -1,0 +1,41 @@
+{
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "express-session": "^1.18.2",
+    "http": "^0.0.1-security",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.0.1"
+  },
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SATHWIKMS23/INVENTORY_MANAGER.git"
+  },
+  "keywords": [
+    "mernstack",
+    "react",
+    "nodejs",
+    "express",
+    "mongodb",
+    "inventory"
+  ],
+  "author": "Sathwik M S",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SATHWIKMS23/INVENTORY_MANAGER/issues"
+  },
+  "homepage": "https://github.com/SATHWIKMS23/INVENTORY_MANAGER#readme",
+  "description": "An Web-App where you can track Inventory "
+}
