@@ -29,7 +29,7 @@ export default function Inventory() {
 
   const fetchInventory = async () => {
     try {
-      const response = await fetch('http://localhost:8080/products/getall', {
+      const response = await fetch('https://inventory-manager-backend-hglg.onrender.com/products/getall', {
         method: 'GET',
         credentials: 'include',
       });
@@ -58,7 +58,7 @@ export default function Inventory() {
 
   const handleSaveEdit = async (id) => {
     try {
-      const response = await fetch(`http://localhost:8080/products/edit/${id}`, {
+      const response = await fetch(`https://inventory-manager-backend-hglg.onrender.com/products/edit/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -81,7 +81,7 @@ export default function Inventory() {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this product?")) return;
     try {
-      const response = await fetch(`http://localhost:8080/products/delete/${id}`, {
+      const response = await fetch(`https://inventory-manager-backend-hglg.onrender.com/products/delete/${id}`, {
         method: 'DELETE',
         credentials: 'include',
       });

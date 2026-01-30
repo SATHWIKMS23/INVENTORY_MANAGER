@@ -29,7 +29,7 @@ const Main = () => {
     setStatus({ type: '', message: '' });
 
     try {
-      const response = await fetch('http://localhost:8080/products/add', {
+      const response = await fetch('https://inventory-manager-backend-hglg.onrender.com/products/add', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -13,7 +13,7 @@ export default function Statistics() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await fetch('http://localhost:8080/products/getall', {
+        const response = await fetch('https://inventory-manager-backend-hglg.onrender.com/products/getall', {
           method: 'GET',
           credentials: 'include',
         });
