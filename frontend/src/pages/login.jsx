@@ -106,3 +106,4 @@ export default function Login({ setpage, onLoginSuccess }) {
     </motion.div>
   );
 }
+}
