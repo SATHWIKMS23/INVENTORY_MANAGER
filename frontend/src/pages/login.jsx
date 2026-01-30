@@ -12,13 +12,16 @@ export default function Login({ setpage, onLoginSuccess }) {
     setLoading(true);
     setError('');
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+
     try {
       const response = await fetch('https://inventory-manager-backend-hglg.onrender.com/users/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
-        // Allows the browser to receive and store the cookie from the server
-        credentials: 'include', 
       });
 
       const data = await response.json();
@@ -27,14 +30,22 @@ export default function Login({ setpage, onLoginSuccess }) {
         throw new Error(data.message || 'Login failed');
       }
 
-      // Pass user data to App.jsx to unlock Inventory/Statistics
-      onLoginSuccess(data);
+      // ✅ SAVE JWT TOKEN IN LOCAL STORAGE
+      localStorage.setItem("token", data.token);
+
+      // ✅ Save user info (optional)
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      // ✅ Notify App.jsx that login is successful
+      onLoginSuccess(data.user);
+
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
   };
+
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md">
