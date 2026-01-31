@@ -60,40 +60,22 @@ export async function signup(req, res) {
 
 
 
+// ... existing imports
+
 export async function login(req, res) {
   try {
     const { email, password } = req.body;
+    // ... validation and password check logic ...
 
-    if (!email || !password) {
-      return res
-        .status(400)
-        .json({ message: "All fields are required" });
-    }
+    // 1. Generate the token (Ensure your generateToken function returns the token string)
+    const token = generateToken(user._id, res);
 
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res
-        .status(400)
-        .json({ message: "Invalid email or password" });
-    }
-
-    const isPasswordCorrect = await bcrypt.compare(
-      password,
-      user.password
-    );
-
-    if (!isPasswordCorrect) {
-      return res
-        .status(400)
-        .json({ message: "Invalid email or password" });
-    }
-
-    generateToken(user._id, res);
-
+    // 2. Return the token in the JSON body so the frontend can see it
     return res.status(200).json({
       _id: user._id,
       fullName: user.fullName,
       email: user.email,
+      token: token, // <--- ADD THIS LINE
     });
   } catch (error) {
     console.error(error);
@@ -101,6 +83,7 @@ export async function login(req, res) {
   }
 }
 
+// DO THE SAME FOR THE signup FUNCTION
 
 
 export async function logout(req, res) {
