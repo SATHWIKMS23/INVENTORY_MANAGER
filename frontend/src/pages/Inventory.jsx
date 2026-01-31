@@ -2,12 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Edit2, Trash2, Package, Search, Loader2, Save, X, AlertCircle } from 'lucide-react';
 
-export default function Inventory() {
+export default function Inventory({ user, onLogout }) { // Accept user prop for token
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   
-  // States for Editing
   const [editingId, setEditingId] = useState(null);
   const [editFormData, setEditFormData] = useState({ 
     ProductName: '', 
@@ -15,7 +14,6 @@ export default function Inventory() {
     ProductQuantity: '' 
   });
 
-  // General Store Categories
   const categories = [
     "Groceries", "Dairy & Bakery", "Beverages", 
     "Personal Care", "Household Items", "Electronics", 
@@ -28,13 +26,23 @@ export default function Inventory() {
   }, []);
 
   const fetchInventory = async () => {
+    // Safety check for token
+    const token = user?.token || localStorage.getItem('token');
+    
     try {
       const response = await fetch('https://inventory-manager-backend-hglg.onrender.com/products/getall', {
         method: 'GET',
-        credentials: 'include',
+        headers: {
+          'Authorization': `Bearer ${token}` // Mandatory Header
+        }
       });
       const data = await response.json();
-      if (response.ok) setProducts(data);
+      
+      if (response.ok) {
+        setProducts(data);
+      } else if (response.status === 401) {
+        onLogout(); // Redirect if token expired
+      }
     } catch (err) {
       console.error("Failed to fetch", err);
     } finally {
@@ -42,26 +50,16 @@ export default function Inventory() {
     }
   };
 
-  const startEdit = (product) => {
-    setEditingId(product._id);
-    setEditFormData({
-      ProductName: product.ProductName,
-      ProductCategory: product.ProductCategory,
-      ProductQuantity: product.ProductQuantity
-    });
-  };
-
-  const cancelEdit = () => {
-    setEditingId(null);
-    setEditFormData({ ProductName: '', ProductCategory: '', ProductQuantity: '' });
-  };
-
   const handleSaveEdit = async (id) => {
+    const token = user?.token || localStorage.getItem('token');
+    
     try {
       const response = await fetch(`https://inventory-manager-backend-hglg.onrender.com/products/edit/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` // Mandatory Header
+        },
         body: JSON.stringify(editFormData),
       });
 
@@ -80,17 +78,38 @@ export default function Inventory() {
 
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this product?")) return;
+    const token = user?.token || localStorage.getItem('token');
+    
     try {
       const response = await fetch(`https://inventory-manager-backend-hglg.onrender.com/products/delete/${id}`, {
         method: 'DELETE',
-        credentials: 'include',
+        headers: {
+          'Authorization': `Bearer ${token}` // Mandatory Header
+        }
       });
       if (response.ok) {
         setProducts(products.filter(p => p._id !== id));
+      } else if (response.status === 401) {
+        onLogout();
       }
     } catch (err) {
       alert("Delete failed");
     }
+  };
+
+  // ... rest of your startEdit, cancelEdit, and JSX remains the same ...
+  const startEdit = (product) => {
+    setEditingId(product._id);
+    setEditFormData({
+      ProductName: product.ProductName,
+      ProductCategory: product.ProductCategory,
+      ProductQuantity: product.ProductQuantity
+    });
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditFormData({ ProductName: '', ProductCategory: '', ProductQuantity: '' });
   };
 
   const filteredProducts = products.filter(p => 
@@ -144,7 +163,6 @@ export default function Inventory() {
                     className="hover:bg-blue-50/10 transition-colors"
                   >
                     {editingId === product._id ? (
-                      /* --- EDITING MODE --- */
                       <>
                         <td className="p-5">
                           <input 
@@ -183,7 +201,6 @@ export default function Inventory() {
                         </td>
                       </>
                     ) : (
-                      /* --- DISPLAY MODE --- */
                       <>
                         <td className="p-5">
                           <div className="flex items-center gap-3">

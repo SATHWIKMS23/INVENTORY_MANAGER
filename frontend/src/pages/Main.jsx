@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { PlusCircle, Loader2 } from 'lucide-react';
 
-const Main = ({ user, onLogout }) => { // Accept user prop here
+const Main = ({ user, onLogout }) => {
   const [formData, setFormData] = useState({
     ProductName: '',
     ProductCategory: '',
@@ -28,8 +28,8 @@ const Main = ({ user, onLogout }) => { // Accept user prop here
     setLoading(true);
     setStatus({ type: '', message: '' });
 
-    // CRITICAL FIX: Use the token from the prop
-    const token = user?.token;
+    // Try prop first, then storage
+    const token = user?.token || localStorage.getItem('token');
 
     if (!token) {
       setStatus({ type: 'error', message: 'No session found. Please log in again.' });
@@ -42,7 +42,7 @@ const Main = ({ user, onLogout }) => { // Accept user prop here
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` 
+          'Authorization': `Bearer ${token}` // Mandatory
         },
         body: JSON.stringify({
           ProductName: formData.ProductName,
@@ -55,8 +55,8 @@ const Main = ({ user, onLogout }) => { // Accept user prop here
 
       if (!response.ok) {
         if (response.status === 401) {
-            onLogout(); // Log user out if the token is invalid on the server
-            return;
+          onLogout();
+          return;
         }
         throw new Error(data.message || 'Failed to add product');
       }
