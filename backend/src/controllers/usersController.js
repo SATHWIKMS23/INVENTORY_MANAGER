@@ -65,17 +65,17 @@ export async function signup(req, res) {
 export async function login(req, res) {
   try {
     const { email, password } = req.body;
-    // ... validation and password check logic ...
+    // ... validation and user find logic ...
 
-    // 1. Generate the token (Ensure your generateToken function returns the token string)
+    // 1. Generate the token (Ensure generateToken returns the token string)
     const token = generateToken(user._id, res);
 
-    // 2. Return the token in the JSON body so the frontend can see it
+    // 2. Explicitly include the token in the JSON response body
     return res.status(200).json({
       _id: user._id,
       fullName: user.fullName,
       email: user.email,
-      token: token, // <--- ADD THIS LINE
+      token: token, // <--- CRITICAL FIX
     });
   } catch (error) {
     console.error(error);
