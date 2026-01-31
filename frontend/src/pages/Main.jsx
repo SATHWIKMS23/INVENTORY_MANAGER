@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { PlusCircle, Loader2 } from 'lucide-react';
 
-const Main = ({ user }) => { // Accept user prop
+const Main = ({ user }) => {
   const [formData, setFormData] = useState({
     ProductName: '',
     ProductCategory: '',
@@ -28,7 +28,7 @@ const Main = ({ user }) => { // Accept user prop
     setLoading(true);
     setStatus({ type: '', message: '' });
 
-    // Use token from props; fallback to localStorage if needed
+    // Ensure we have the latest token from either props or local storage
     const token = user?.token || localStorage.getItem('token');
 
     if (!token) {
@@ -42,7 +42,8 @@ const Main = ({ user }) => { // Accept user prop
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` // Mandatory header
+          // Space after 'Bearer' is mandatory
+          'Authorization': `Bearer ${token.trim()}` 
         },
         body: JSON.stringify({
           ProductName: formData.ProductName,
@@ -54,15 +55,17 @@ const Main = ({ user }) => { // Accept user prop
       const data = await response.json();
 
       if (!response.ok) {
-        if (response.status === 401) {
-            throw new Error("Session expired. Please log out and log back in.");
+        // Handle token expiration specifically
+        if (response.status === 401 || response.status === 403) {
+          throw new Error("Your session has expired. Please log out and back in.");
         }
         throw new Error(data.message || 'Failed to add product');
       }
 
-      setStatus({ type: 'success', message: 'Product added successfully!' });
+      setStatus({ type: 'success', message: 'Product successfully added!' });
       setFormData({ ProductName: '', ProductCategory: '', ProductQuantity: '' }); 
     } catch (err) {
+      console.error("Fetch Error:", err);
       setStatus({ type: 'error', message: err.message });
     } finally {
       setLoading(false);
@@ -73,7 +76,7 @@ const Main = ({ user }) => { // Accept user prop
     <div className="w-full h-full flex flex-col items-center justify-center bg-gray-50 p-6">
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-2xl bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
         <div className="flex items-center gap-4 mb-8">
-          <div className="p-3 bg-blue-600 rounded-2xl text-white shadow-lg shadow-blue-200"><PlusCircle size={24} /></div>
+          <div className="p-3 bg-blue-600 rounded-2xl text-white shadow-lg"><PlusCircle size={24} /></div>
           <h1 className="text-2xl font-bold text-gray-800">New Material Entry</h1>
         </div>
 
@@ -86,20 +89,47 @@ const Main = ({ user }) => { // Accept user prop
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="md:col-span-2 space-y-2">
             <label className="text-sm font-semibold text-gray-600 ml-1">Product Name</label>
-            <input type="text" name="ProductName" required value={formData.ProductName} onChange={handleChange} placeholder="Enter product name" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none bg-gray-50/50 text-sm" />
+            <input 
+              type="text" 
+              name="ProductName" 
+              required 
+              value={formData.ProductName} 
+              onChange={handleChange} 
+              placeholder="Enter product name" 
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none bg-gray-50/50 text-sm" 
+            />
           </div>
           <div className="space-y-2">
             <label className="text-sm font-semibold text-gray-600 ml-1">Category</label>
-            <select name="ProductCategory" required value={formData.ProductCategory} onChange={handleChange} className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none bg-gray-50/50 text-sm">
+            <select 
+              name="ProductCategory" 
+              required 
+              value={formData.ProductCategory} 
+              onChange={handleChange} 
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none bg-gray-50/50 text-sm"
+            >
               <option value="">Select Category</option>
               {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
             </select>
           </div>
           <div className="space-y-2">
             <label className="text-sm font-semibold text-gray-600 ml-1">Quantity</label>
-            <input type="number" name="ProductQuantity" required min="1" value={formData.ProductQuantity} onChange={handleChange} placeholder="e.g. 10" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none bg-gray-50/50 text-sm" />
+            <input 
+              type="number" 
+              name="ProductQuantity" 
+              required 
+              min="1" 
+              value={formData.ProductQuantity} 
+              onChange={handleChange} 
+              placeholder="e.g. 10" 
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none bg-gray-50/50 text-sm" 
+            />
           </div>
-          <button disabled={loading} className="md:col-span-2 mt-4 w-full bg-blue-600 text-white py-4 rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-100 disabled:bg-blue-300">
+          <button 
+            type="submit"
+            disabled={loading} 
+            className="md:col-span-2 mt-4 w-full bg-blue-600 text-white py-4 rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg disabled:bg-blue-300"
+          >
             {loading ? <Loader2 className="animate-spin mx-auto" /> : "Confirm and Add"}
           </button>
         </form>

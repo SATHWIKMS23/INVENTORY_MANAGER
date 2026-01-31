@@ -20,7 +20,8 @@ app.use(cors({
     "http://localhost:5173" 
   ],
   methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true
+  credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
 app.use("/users", users);
 app.use("/products", products);
