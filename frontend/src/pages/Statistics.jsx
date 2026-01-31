@@ -78,7 +78,7 @@ export default function Statistics({ user, onLogout }) {
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 h-[400px]"
+            className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 h-96"
           >
             <h3 className="text-lg font-bold text-gray-700 mb-6 uppercase text-[12px] tracking-widest">Stock Distribution</h3>
             <ResponsiveContainer width="100%" height="90%">
@@ -107,7 +107,7 @@ export default function Statistics({ user, onLogout }) {
             className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 overflow-hidden"
           >
             <h3 className="text-lg font-bold text-gray-700 mb-6 uppercase text-[12px] tracking-widest">Category Breakdown</h3>
-            <div className="overflow-y-auto h-[300px]">
+            <div className="overflow-y-auto h-80">
               {categoryStats.map((cat, idx) => (
                 <div key={idx} className="flex justify-between items-center py-4 border-b border-gray-50 last:border-0">
                   <div className="flex items-center gap-3">

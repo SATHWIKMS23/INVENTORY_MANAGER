@@ -5,7 +5,7 @@ import Login from './login';
 import Signup from './signup';
 import Main from './Main';
 
-export default function Home({ user, onLoginSuccess }) {
+export default function Home({ user, onLoginSuccess, onLogout }) {
   const [authMode, setAuthMode] = useState("login");
 
   // IF LOGGED IN: Show the blank dashboard area
@@ -21,7 +21,7 @@ export default function Home({ user, onLoginSuccess }) {
       <div className="w-full h-full bg-white rounded-3xl shadow-2xl flex overflow-hidden border border-gray-100">
         
         {/* LEFT SIDE: Branding */}
-        <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-blue-700 to-indigo-900 p-12 flex-col justify-between text-white ">
+        <div className="hidden lg:flex w-1/2 bg-linear-to-br from-blue-700 to-indigo-900 p-12 flex-col justify-between text-white ">
           <div>
             <div className="flex items-center gap-3 mb-10 ">
               <div className="bg-white/20 p-2 rounded-lg backdrop-blur-sm">
