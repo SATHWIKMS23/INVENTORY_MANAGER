@@ -11,7 +11,7 @@ export default function Home({ user, onLoginSuccess }) {
   // IF LOGGED IN: Show the blank dashboard area
   if (user) {
     return (
-      <Main />
+      <Main user={user} onLogout={onLogout} />
     );
   }
 
@@ -58,7 +58,7 @@ export default function Home({ user, onLoginSuccess }) {
                 </motion.div>
               ) : (
                 <motion.div key="signup" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-                  <Signup setpage={setAuthMode} />
+                  <Signup setpage={setAuthMode} onLoginSuccess={onLoginSuccess} />
                 </motion.div>
               )}
             </AnimatePresence>

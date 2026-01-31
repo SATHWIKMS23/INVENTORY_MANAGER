@@ -4,7 +4,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { PieChart, Pie, Legend } from 'recharts';
 import { Package, TrendingUp, Layers, AlertTriangle, Loader2 } from 'lucide-react';
 
-export default function Statistics() {
+export default function Statistics({ user, onLogout }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -12,14 +12,20 @@ export default function Statistics() {
 
   useEffect(() => {
     const fetchStats = async () => {
+      const token = user?.token || localStorage.getItem('token');
+      
       try {
         const response = await fetch('https://inventory-manager-backend-hglg.onrender.com/products/getall', {
           method: 'GET',
-          credentials: 'include',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
         });
         const result = await response.json();
         if (response.ok) {
           setData(result);
+        } else if (response.status === 401) {
+          onLogout();
         }
       } catch (err) {
         console.error("Failed to fetch stats", err);

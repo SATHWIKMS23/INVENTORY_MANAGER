@@ -45,12 +45,13 @@ export async function signup(req, res) {
       password: hashedPassword,
     });
 
-    generateToken(newUser._id, res);
+    const token = generateToken(newUser._id, res);
 
     return res.status(201).json({
       _id: newUser._id,
       fullName: newUser.fullName,
       email: newUser.email,
+      token: token,
     });
   } catch (error) {
     console.error(error);
@@ -79,7 +80,7 @@ export async function login(req, res) {
         .status(400)
         .json({ message: "Invalid email or password" });
     } 
-    
+
     const token = generateToken(user._id, res);
 
     return res.status(200).json({

@@ -38,8 +38,8 @@ export default function App() {
   const renderPage = () => {
     // PASS THE USER OBJECT TO INVENTORY
     if (page === "inventory") return <Inventory user={user} onLogout={handleLogout} />;
-    if (page === "statistics") return <Statistics user={user} />;
-    return <Home user={user} onLoginSuccess={handleLoginSuccess} />;
+    if (page === "statistics") return <Statistics user={user} onLogout={handleLogout} />;
+    return <Home user={user} onLoginSuccess={handleLoginSuccess} onLogout={handleLogout} />;
   };
 
   return (

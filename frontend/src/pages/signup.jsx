@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Lock, User, Mail, UserPlus, Box, Loader2 } from 'lucide-react';
 
-export default function Signup({ setpage }) {
+export default function Signup({ setpage, onLoginSuccess }) {
   // 1. Manage form state
   const [formData, setFormData] = useState({
     fullName: '',
@@ -38,10 +38,11 @@ export default function Signup({ setpage }) {
         throw new Error(data.message || 'Something went wrong');
       }
 
-      // Success! Redirect to login or auto-login the user
-      console.log('User created:', data);
-      alert("Account created successfully!");
-      setpage("login");
+      // Success! Auto-login the user with the token from signup response
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+        onLoginSuccess(data);
+      }
       
     } catch (err) {
       setError(err.message);
