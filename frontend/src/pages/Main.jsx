@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { PlusCircle, Loader2 } from 'lucide-react';
 
-const Main = ({ user }) => { 
+const Main = ({ user, onLogout }) => { // Accept user prop here
   const [formData, setFormData] = useState({
     ProductName: '',
     ProductCategory: '',
@@ -28,8 +28,8 @@ const Main = ({ user }) => {
     setLoading(true);
     setStatus({ type: '', message: '' });
 
-    // 1. Get token from props or localStorage
-    const token = user?.token || localStorage.getItem('token');
+    // CRITICAL FIX: Use the token from the prop
+    const token = user?.token;
 
     if (!token) {
       setStatus({ type: 'error', message: 'No session found. Please log in again.' });
@@ -42,7 +42,6 @@ const Main = ({ user }) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          // 2. Ensure exactly one space between Bearer and the token
           'Authorization': `Bearer ${token}` 
         },
         body: JSON.stringify({
@@ -56,7 +55,8 @@ const Main = ({ user }) => {
 
       if (!response.ok) {
         if (response.status === 401) {
-            throw new Error("Session expired. Please log out and back in.");
+            onLogout(); // Log user out if the token is invalid on the server
+            return;
         }
         throw new Error(data.message || 'Failed to add product');
       }
@@ -100,7 +100,7 @@ const Main = ({ user }) => {
             <label className="text-sm font-semibold text-gray-600 ml-1">Quantity</label>
             <input type="number" name="ProductQuantity" required min="1" value={formData.ProductQuantity} onChange={handleChange} placeholder="e.g. 10" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none bg-gray-50/50 text-sm" />
           </div>
-          <button disabled={loading} className="md:col-span-2 mt-4 w-full bg-blue-600 text-white py-4 rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg disabled:bg-blue-300">
+          <button disabled={loading} className="md:col-span-2 mt-4 w-full bg-blue-600 text-white py-4 rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-100 disabled:bg-blue-300">
             {loading ? <Loader2 className="animate-spin mx-auto" /> : "Confirm and Add"}
           </button>
         </form>

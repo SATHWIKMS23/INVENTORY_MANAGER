@@ -1,23 +1,21 @@
-import { useState } from "react";
-import Navbar from "./components/Navbar";
-import Home from "./pages/Home";
-import Inventory from "./pages/Inventory";
-import Statistics from "./pages/Statistics";
+import { useState, useEffect } from "react";
+// ... other imports
 
 export default function App() {
   const [page, setPage] = useState("home");
   
-  // Initialize user state from localStorage so the session persists on refresh
+  // Initialize user state from localStorage so it persists on refresh
   const [user, setUser] = useState(() => {
     const savedToken = localStorage.getItem('token');
     return savedToken ? { token: savedToken } : null;
   });
 
   const handleLoginSuccess = (userData) => {
-    // Ensure the token is saved to disk AND state immediately
+    // 1. Save to disk
     if (userData.token) {
       localStorage.setItem('token', userData.token);
     }
+    // 2. Update state IMMEDIATELY so props refresh
     setUser(userData);
     setPage("home"); 
   };
@@ -37,8 +35,8 @@ export default function App() {
   };
 
   const renderPage = () => {
-    // PASS THE USER OBJECT (containing the token) to protected pages
-    if (page === "inventory") return <Inventory user={user} />;
+    // IMPORTANT: Pass the 'user' object to Inventory
+    if (page === "inventory") return <Inventory user={user} onLogout={handleLogout} />;
     if (page === "statistics") return <Statistics user={user} />;
     return <Home user={user} onLoginSuccess={handleLoginSuccess} />;
   };
