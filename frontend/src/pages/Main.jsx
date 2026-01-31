@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { PlusCircle, Loader2 } from 'lucide-react';
 
@@ -28,12 +28,11 @@ const Main = () => {
     setLoading(true);
     setStatus({ type: '', message: '' });
 
-    // 1. Retrieve the token stored in localStorage during login
+    // Retrieve the token at the exact moment of submission
     const token = localStorage.getItem('token');
 
-    // 2. Client-side check: if no token exists, don't even try the request
     if (!token) {
-      setStatus({ type: 'error', message: 'Not authorized: Please log in again.' });
+      setStatus({ type: 'error', message: 'No session found. Please log in again.' });
       setLoading(false);
       return;
     }
@@ -43,13 +42,12 @@ const Main = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          // 3. CRITICAL FIX: Send the token in the Authorization header
+          // Ensure "Bearer" is capitalized and followed by a space
           'Authorization': `Bearer ${token}` 
         },
-        // Note: credentials: 'include' is typically used for Cookies. 
-        // If your backend uses JWT in headers, the Authorization header above is what matters.
         body: JSON.stringify({
-          ...formData,
+          ProductName: formData.ProductName,
+          ProductCategory: formData.ProductCategory,
           ProductQuantity: Number(formData.ProductQuantity) 
         }),
       });
@@ -57,6 +55,10 @@ const Main = () => {
       const data = await response.json();
 
       if (!response.ok) {
+        // If the backend says "Not authorized", it means the token is expired
+        if (response.status === 401) {
+            throw new Error("Session expired. Please log out and log back in.");
+        }
         throw new Error(data.message || 'Failed to add product');
       }
 
