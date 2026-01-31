@@ -56,45 +56,45 @@ export default function Signup({ setpage, onLoginSuccess }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="w-full max-w-md"
+      className="w-full max-w-md px-4"
     >
-      <div className="bg-white/80 backdrop-blur-md p-8 rounded-3xl shadow-2xl border border-gray-100">
-        <div className="flex flex-col items-center mb-8">
+      <div className="bg-white/80 backdrop-blur-md p-6 sm:p-8 rounded-3xl shadow-2xl border border-gray-100">
+        <div className="flex flex-col items-center mb-6 sm:mb-8">
           <div className="bg-indigo-600 p-3 rounded-2xl shadow-lg shadow-indigo-200 mb-4">
-            <Box className="text-white w-8 h-8" />
+            <Box className="text-white w-6 h-6 sm:w-8 sm:h-8" />
           </div>
-          <h2 className="text-3xl font-bold text-gray-800">Create Account</h2>
-          <p className="text-gray-500 mt-2 text-sm">Join StockFlow to manage your inventory</p>
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-800">Create Account</h2>
+          <p className="text-gray-500 mt-2 text-xs sm:text-sm">Join StockFlow to manage your inventory</p>
         </div>
 
         {/* Error Message Display */}
         {error && (
-          <div className="mb-4 p-3 bg-red-100 border-l-4 border-red-500 text-red-700 text-sm rounded">
+          <div className="mb-4 p-3 bg-red-100 border-l-4 border-red-500 text-red-700 text-xs sm:text-sm rounded">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 ml-1">Full Name</label>
+            <label className="text-xs sm:text-sm font-medium text-gray-700 ml-1">Full Name</label>
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <User className="h-5 w-5 text-gray-400 group-focus-within:text-indigo-500 transition-colors" />
               </div>
               <input
                 type="text"
-                name="fullName" // Matches backend
+                name="fullName"
                 required
                 value={formData.fullName}
                 onChange={handleChange}
-                className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl bg-gray-50/50 focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                className="block w-full pl-10 pr-3 py-2 sm:py-3 border border-gray-200 rounded-xl bg-gray-50/50 focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-sm"
                 placeholder="John Doe"
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 ml-1">Email Address</label>
+            <label className="text-xs sm:text-sm font-medium text-gray-700 ml-1">Email Address</label>
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Mail className="h-5 w-5 text-gray-400 group-focus-within:text-indigo-500 transition-colors" />
@@ -105,14 +105,14 @@ export default function Signup({ setpage, onLoginSuccess }) {
                 required
                 value={formData.email}
                 onChange={handleChange}
-                className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl bg-gray-50/50 focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                className="block w-full pl-10 pr-3 py-2 sm:py-3 border border-gray-200 rounded-xl bg-gray-50/50 focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-sm"
                 placeholder="name@company.com"
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 ml-1">Password</label>
+            <label className="text-xs sm:text-sm font-medium text-gray-700 ml-1">Password</label>
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Lock className="h-5 w-5 text-gray-400 group-focus-within:text-indigo-500 transition-colors" />
@@ -123,7 +123,7 @@ export default function Signup({ setpage, onLoginSuccess }) {
                 required
                 value={formData.password}
                 onChange={handleChange}
-                className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl bg-gray-50/50 focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                className="block w-full pl-10 pr-3 py-2 sm:py-3 border border-gray-200 rounded-xl bg-gray-50/50 focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-sm"
                 placeholder="Min. 6 characters"
               />
             </div>
@@ -134,10 +134,10 @@ export default function Signup({ setpage, onLoginSuccess }) {
             whileTap={{ scale: 0.98 }}
             disabled={loading}
             type="submit"
-            className="w-full flex justify-center items-center py-3 px-4 rounded-xl shadow-lg text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 transition-all gap-2"
+            className="w-full flex justify-center items-center py-2 sm:py-3 px-4 rounded-xl shadow-lg text-xs sm:text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 transition-all gap-2"
           >
             {loading ? (
-              <Loader2 className="w-5 h-5 animate-spin" />
+              <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
             ) : (
               <>
                 <UserPlus className="w-4 h-4" />
@@ -147,7 +147,7 @@ export default function Signup({ setpage, onLoginSuccess }) {
           </motion.button>
         </form>
 
-        <p className="mt-8 text-center text-sm text-gray-600">
+        <p className="mt-6 sm:mt-8 text-center text-xs sm:text-sm text-gray-600">
           Already have an account?{' '}
           <button 
             onClick={() => setpage("login")}
