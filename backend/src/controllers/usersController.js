@@ -67,10 +67,21 @@ export async function login(req, res) {
     const { email, password } = req.body;
     // ... validation and user find logic ...
 
-    // 1. Generate the token (Ensure generateToken returns the token string)
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res
+        .status(400)
+        .json({ message: "Invalid email or password" });
+    } 
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res
+        .status(400)
+        .json({ message: "Invalid email or password" });
+    } 
+    
     const token = generateToken(user._id, res);
 
-    // 2. Explicitly include the token in the JSON response body
     return res.status(200).json({
       _id: user._id,
       fullName: user.fullName,
