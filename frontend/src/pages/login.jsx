@@ -25,18 +25,12 @@ export default function Login({ setpage, onLoginSuccess }) {
         throw new Error(data.message || 'Login failed');
       }
 
-      /**
-       * SUCCESS LOGIC
-       * 1. Store the JWT token in localStorage so it can be used 
-       * in the headers of subsequent API calls (like adding products).
-       */
+      // Save token to localStorage for persistence
       if (data.token) {
         localStorage.setItem('token', data.token);
       }
 
-      // 2. Notify the parent component (App.jsx)
       onLoginSuccess(data);
-      
     } catch (err) {
       setError(err.message);
     } finally {
@@ -45,11 +39,7 @@ export default function Login({ setpage, onLoginSuccess }) {
   };
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 20 }} 
-      animate={{ opacity: 1, y: 0 }} 
-      className="w-full max-w-md"
-    >
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md">
       <div className="bg-white/80 backdrop-blur-md p-8 rounded-3xl shadow-2xl border border-gray-100">
         <div className="flex flex-col items-center mb-8">
           <div className="bg-blue-600 p-3 rounded-2xl shadow-lg mb-4">
@@ -58,17 +48,13 @@ export default function Login({ setpage, onLoginSuccess }) {
           <h2 className="text-3xl font-bold text-gray-800">Welcome Back</h2>
         </div>
 
-        {error && (
-          <div className="mb-4 p-3 bg-red-100 text-red-700 text-sm rounded-xl border-l-4 border-red-500">
-            {error}
-          </div>
-        )}
+        {error && <div className="mb-4 p-3 bg-red-100 text-red-700 text-sm rounded-xl border-l-4 border-red-500">{error}</div>}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700 ml-1">Email</label>
             <div className="relative group">
-              <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+              <User className="absolute left-3 top-3.5 h-5 w-5 text-gray-400 group-focus-within:text-blue-500" />
               <input
                 type="email"
                 required
@@ -82,7 +68,7 @@ export default function Login({ setpage, onLoginSuccess }) {
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700 ml-1">Password</label>
             <div className="relative group">
-              <Lock className="absolute left-3 top-3.5 h-5 w-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+              <Lock className="absolute left-3 top-3.5 h-5 w-5 text-gray-400 group-focus-within:text-blue-500" />
               <input
                 type="password"
                 required
@@ -98,26 +84,14 @@ export default function Login({ setpage, onLoginSuccess }) {
             whileTap={{ scale: 0.98 }}
             disabled={loading}
             type="submit"
-            className="w-full flex justify-center items-center py-3 rounded-xl shadow-lg text-white bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 gap-2 font-semibold transition-colors"
+            className="w-full flex justify-center items-center py-3 rounded-xl shadow-lg text-white bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 gap-2 font-semibold"
           >
-            {loading ? (
-              <Loader2 className="animate-spin h-5 w-5" />
-            ) : (
-              <>
-                Sign In <ArrowRight className="w-4 h-4" />
-              </>
-            )}
+            {loading ? <Loader2 className="animate-spin" /> : <>Sign In <ArrowRight className="w-4 h-4" /></>}
           </motion.button>
         </form>
 
         <p className="mt-8 text-center text-sm text-gray-600">
-          Don't have an account?{' '}
-          <button 
-            onClick={() => setpage("signup")} 
-            className="font-semibold text-blue-600 hover:underline"
-          >
-            Create account
-          </button>
+          Don't have an account? <button onClick={() => setpage("signup")} className="font-semibold text-blue-600 hover:underline">Create account</button>
         </p>
       </div>
     </motion.div>

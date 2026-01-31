@@ -6,15 +6,29 @@ import Statistics from "./pages/Statistics";
 
 export default function App() {
   const [page, setPage] = useState("home");
-  const [user, setUser] = useState(null); // Auth State
+  
+  // Initialize user state from localStorage so the session persists on refresh
+  const [user, setUser] = useState(() => {
+    const savedToken = localStorage.getItem('token');
+    return savedToken ? { token: savedToken } : null;
+  });
 
   const handleLoginSuccess = (userData) => {
+    // Ensure the token is saved to disk AND state immediately
+    if (userData.token) {
+      localStorage.setItem('token', userData.token);
+    }
     setUser(userData);
     setPage("home"); 
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setUser(null);
+    setPage("home");
+  };
+
   const navigateTo = (targetPage) => {
-    // PROTECTED ROUTE LOGIC
     if (!user && (targetPage === "inventory" || targetPage === "statistics")) {
       alert("Please login to access this page");
       return;
@@ -23,9 +37,9 @@ export default function App() {
   };
 
   const renderPage = () => {
-    if (page === "inventory") return <Inventory />;
-    if (page === "statistics") return <Statistics />;
-    // IMPORTANT: Pass user and handleLoginSuccess to Home
+    // PASS THE USER OBJECT (containing the token) to protected pages
+    if (page === "inventory") return <Inventory user={user} />;
+    if (page === "statistics") return <Statistics user={user} />;
     return <Home user={user} onLoginSuccess={handleLoginSuccess} />;
   };
 
@@ -37,9 +51,8 @@ export default function App() {
         changePage1={() => navigateTo("home")}
         changePage2={() => navigateTo("inventory")}
         changePage3={() => navigateTo("statistics")}
-        onLogout={() => { setUser(null); setPage("home"); }}
+        onLogout={handleLogout}
       />
-      
       <main className="flex-1 w-full overflow-hidden">
         {renderPage()}
       </main>

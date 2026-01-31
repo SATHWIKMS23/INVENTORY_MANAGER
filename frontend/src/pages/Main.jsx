@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { PlusCircle, Loader2 } from 'lucide-react';
 
-const Main = () => {
+const Main = ({ user }) => { // Accept user prop
   const [formData, setFormData] = useState({
     ProductName: '',
     ProductCategory: '',
@@ -28,8 +28,8 @@ const Main = () => {
     setLoading(true);
     setStatus({ type: '', message: '' });
 
-    // Retrieve the token at the exact moment of submission
-    const token = localStorage.getItem('token');
+    // Use token from props; fallback to localStorage if needed
+    const token = user?.token || localStorage.getItem('token');
 
     if (!token) {
       setStatus({ type: 'error', message: 'No session found. Please log in again.' });
@@ -42,8 +42,7 @@ const Main = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          // Ensure "Bearer" is capitalized and followed by a space
-          'Authorization': `Bearer ${token}` 
+          'Authorization': `Bearer ${token}` // Mandatory header
         },
         body: JSON.stringify({
           ProductName: formData.ProductName,
@@ -55,7 +54,6 @@ const Main = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        // If the backend says "Not authorized", it means the token is expired
         if (response.status === 401) {
             throw new Error("Session expired. Please log out and log back in.");
         }
@@ -73,24 +71,14 @@ const Main = () => {
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center bg-gray-50 p-6">
-      <motion.div 
-        initial={{ opacity: 0, y: 10 }} 
-        animate={{ opacity: 1, y: 0 }} 
-        className="w-full max-w-2xl bg-white rounded-3xl shadow-xl p-8 border border-gray-100"
-      >
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-2xl bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
         <div className="flex items-center gap-4 mb-8">
-          <div className="p-3 bg-blue-600 rounded-2xl text-white shadow-lg shadow-blue-200">
-            <PlusCircle size={24} />
-          </div>
+          <div className="p-3 bg-blue-600 rounded-2xl text-white shadow-lg shadow-blue-200"><PlusCircle size={24} /></div>
           <h1 className="text-2xl font-bold text-gray-800">New Material Entry</h1>
         </div>
 
         {status.message && (
-          <div className={`mb-6 p-4 rounded-xl text-sm font-medium border ${
-            status.type === 'success' 
-              ? 'bg-green-50 text-green-700 border-green-100' 
-              : 'bg-red-50 text-red-700 border-red-100'
-          }`}>
+          <div className={`mb-6 p-4 rounded-xl text-sm font-medium border ${status.type === 'success' ? 'bg-green-50 text-green-700 border-green-100' : 'bg-red-50 text-red-700 border-red-100'}`}>
             {status.message}
           </div>
         )}
@@ -98,50 +86,20 @@ const Main = () => {
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="md:col-span-2 space-y-2">
             <label className="text-sm font-semibold text-gray-600 ml-1">Product Name</label>
-            <input 
-              type="text" 
-              name="ProductName" 
-              required 
-              value={formData.ProductName} 
-              onChange={handleChange} 
-              placeholder="Enter product name" 
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none bg-gray-50/50 text-sm" 
-            />
+            <input type="text" name="ProductName" required value={formData.ProductName} onChange={handleChange} placeholder="Enter product name" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none bg-gray-50/50 text-sm" />
           </div>
-          
           <div className="space-y-2">
             <label className="text-sm font-semibold text-gray-600 ml-1">Category</label>
-            <select 
-              name="ProductCategory" 
-              required 
-              value={formData.ProductCategory} 
-              onChange={handleChange} 
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none bg-gray-50/50 text-sm"
-            >
+            <select name="ProductCategory" required value={formData.ProductCategory} onChange={handleChange} className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none bg-gray-50/50 text-sm">
               <option value="">Select Category</option>
               {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
             </select>
           </div>
-
           <div className="space-y-2">
             <label className="text-sm font-semibold text-gray-600 ml-1">Quantity</label>
-            <input 
-              type="number" 
-              name="ProductQuantity" 
-              required 
-              min="1" 
-              value={formData.ProductQuantity} 
-              onChange={handleChange} 
-              placeholder="e.g. 10" 
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none bg-gray-50/50 text-sm" 
-            />
+            <input type="number" name="ProductQuantity" required min="1" value={formData.ProductQuantity} onChange={handleChange} placeholder="e.g. 10" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none bg-gray-50/50 text-sm" />
           </div>
-
-          <button 
-            type="submit"
-            disabled={loading} 
-            className="md:col-span-2 mt-4 w-full bg-blue-600 text-white py-4 rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-100 disabled:bg-blue-300"
-          >
+          <button disabled={loading} className="md:col-span-2 mt-4 w-full bg-blue-600 text-white py-4 rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-100 disabled:bg-blue-300">
             {loading ? <Loader2 className="animate-spin mx-auto" /> : "Confirm and Add"}
           </button>
         </form>
