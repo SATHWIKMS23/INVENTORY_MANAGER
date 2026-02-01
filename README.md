@@ -49,5 +49,6 @@ A full-stack web application for managing and tracking inventory in real-time. B
 **Sathwik M S**
 
 - GitHub: [@SATHWIKMS23](https://github.com/SATHWIKMS23)
-- Project Link: [https://github.com/SATHWIKMS23/INVENTORY_MANAGER](https://inventory-manager-hweg.onrender.com/)
+- Project Link: https://inventory-manager-hweg.onrender.com/
+
 
