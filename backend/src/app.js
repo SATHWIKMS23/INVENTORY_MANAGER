@@ -16,7 +16,7 @@ app.use(cookieParser());
 
 app.use(cors({
   origin: [
-    "https://inventory-manager-hweg.onrender.com", 
+    "https://inventory-manager-hweg.onrender", 
     "http://localhost:5173" 
   ],
   methods: ["GET", "POST", "PUT", "DELETE"],
